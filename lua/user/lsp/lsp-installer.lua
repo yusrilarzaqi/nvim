@@ -9,6 +9,7 @@ lsp_installer.on_server_ready(function(server)
 	local opts = {
 		on_attach = require("user.lsp.handlers").on_attach,
 		capabilities = require("user.lsp.handlers").capabilities,
+		lsp_flags = { debounce_text_changes = 150 },
 	}
 
 	-- if server.name == "jsonls" then
@@ -26,10 +27,10 @@ lsp_installer.on_server_ready(function(server)
 		opts = vim.tbl_deep_extend("force", pyright_opts, opts)
 	end
 
-	-- if server.name == "tsserver" then
-	-- 	local tsserver_pts = require("user.lsp.settings.tsserver")
-	-- 	opts = vim.tbl_deep_extend("force", tsserver_pts, opts)
-	-- end
+	if server.name == "tsserver" then
+		local tsserver_pts = require("user.lsp.settings.tsserver")
+		opts = vim.tbl_deep_extend("force", tsserver_pts, opts)
+	end
 
 	if server.name == "cssls" then
 		local cssls_opts = require("user.lsp.settings.cssls")
@@ -41,20 +42,25 @@ lsp_installer.on_server_ready(function(server)
 		opts = vim.tbl_deep_extend("force", html_opts, opts)
 	end
 
-	-- if server.name == "emmet_ls" then
-	--   local emmet_opts = require("user.lsp.settings.emmet_ls")
-	--   opts = vim.tbl_deep_extend("force", emmet_opts, opts)
-	-- end
+	if server.name == "emmet_ls" then
+		local emmet_opts = require("user.lsp.settings.emmet_ls")
+		opts = vim.tbl_deep_extend("force", emmet_opts, opts)
+	end
 
 	if server.name == "eslint" then
 		local eslint_pts = require("user.lsp.settings.eslint")
 		opts = vim.tbl_deep_extend("force", eslint_pts, opts)
 	end
 
-	-- if server.name == "zk" then
-	-- 	local zk_pts = require("user.lsp.settings.zk")
-	-- 	opts = vim.tbl_deep_extend("force", zk_pts, opts)
-	-- end
+	if server.name == "gopls" then
+		local gopls_pts = require("user.lsp.settings.gopls")
+		opts = vim.tbl_deep_extend("force", gopls_pts, opts)
+	end
+
+	if server.name == "marksman" then
+		local marksman_pts = require("user.lsp.settings.marksman")
+		opts = vim.tbl_deep_extend("force", marksman_pts, opts)
+	end
 
 	-- This setup() function is exactly the same as lspconfig's setup function.
 	-- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md

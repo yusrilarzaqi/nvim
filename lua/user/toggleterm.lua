@@ -13,16 +13,16 @@ toggleterm.setup({
 	start_in_insert = true,
 	insert_mappings = true,
 	persist_size = true,
-	direction = "vertical", -- Horizontal | vertical | float
+	direction = "float", -- Horizontal | vertical | float
 	close_on_exit = true,
 	shell = vim.o.shell,
 	float_opts = {
-		border = "curved", -- 'single' | 'double' | 'shadow' | 'curved' |
+		border = "single", -- 'single' | 'double' | 'shadow' | 'curved' |
 		winblend = 0,
-		highlights = {
-			border = "Normal",
-			background = "Normal",
-		},
+		--[[ highlights = { ]]
+		--[[ 	border = "Normal", ]]
+		--[[ 	background = "Normal", ]]
+		--[[ }, ]]
 	},
 })
 
@@ -49,6 +49,16 @@ function _LAZYGIT_TOGGLE()
 	lazygit:toggle()
 end
 
+local ranger = Terminal:new({
+	cmd = "ranger",
+	-- hidden = true,
+	direction = "float", -- Horizontal | vertical | float
+})
+
+function _RANGER_TOGGLE()
+	ranger:toggle()
+end
+
 local node = Terminal:new({ cmd = "node", hidden = true })
 
 function _NODE_TOGGLE()
@@ -71,6 +81,12 @@ local htop = Terminal:new({
 	direction = "float", -- Horizontal | vertical | float
 })
 
+local compel = Terminal:new({
+	cmd = "compel",
+	-- hidden = true,
+	direction = "float", -- Horizontal | vertical | float
+})
+
 function _HTOP_TOGGLE()
 	htop:toggle()
 end
@@ -79,4 +95,8 @@ local python = Terminal:new({ cmd = "python", hidden = true })
 
 function _PYTHON_TOGGLE()
 	python:toggle()
+end
+
+function _COMPEL_TOGGLE()
+	compel:toggle()
 end

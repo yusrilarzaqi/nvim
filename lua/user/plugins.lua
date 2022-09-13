@@ -46,8 +46,8 @@ return packer.startup(function(use)
 	use("nvim-lua/plenary.nvim") -- Useful lua functions used ny lots of plugins
 	use("windwp/nvim-autopairs") -- Autopairs, integrates with both cmp and treesitter
 	use("numToStr/Comment.nvim") -- Easily comment stuff
-	use("kyazdani42/nvim-web-devicons")
-	use("kyazdani42/nvim-tree.lua")
+	use("kyazdani42/nvim-web-devicons") -- nerdfont
+	use("kyazdani42/nvim-tree.lua") -- optional, updated every week. (see issue #1193) -- filemanager
 	use("akinsho/bufferline.nvim")
 	use("nvim-lualine/lualine.nvim")
 	use("akinsho/toggleterm.nvim")
@@ -58,16 +58,21 @@ return packer.startup(function(use)
 	use("antoinemadec/FixCursorHold.nvim") -- This is needed to fix lsp doc highlight
 	use("folke/which-key.nvim")
 	use("moll/vim-bbye")
-	use("rcarriga/nvim-notify") -- notify
+	-- use("rcarriga/nvim-notify") -- notify
+
+	use("max397574/better-escape.nvim") -- better escape
+
+	-- use("MunifTanjim/nui.nvim") -- ui
+	--[[ use("stevearc/dressing.nvim") ]]
 
 	-- Colorschemes
 	-- use("lunarvim/colorschemes") -- A bunch of colorschemes you can try out
-	-- use("lunarvim/darkplus.nvim")
+	use("lunarvim/darkplus.nvim")
 	use("navarasu/onedark.nvim")
 	use("folke/tokyonight.nvim")
-	use("shaunsingh/nord.nvim")
-	use("Th3Whit3Wolf/one-nvim")
-	-- use("dracula/vim")
+	use("sainnhe/gruvbox-material")
+	use("rebelot/kanagawa.nvim")
+	use("fxn/vim-monochrome")
 
 	-- cmp plugins
 	use("hrsh7th/nvim-cmp") -- The completion plugin
@@ -92,6 +97,8 @@ return packer.startup(function(use)
 
 	-- Telescope
 	use("nvim-telescope/telescope.nvim")
+	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
+	use({ "nvim-telescope/telescope-file-browser.nvim" })
 
 	-- Treesitter
 	use({
@@ -99,16 +106,43 @@ return packer.startup(function(use)
 		run = ":TSUpdate",
 	})
 	use("JoosepAlviste/nvim-ts-context-commentstring")
+	use("nvim-treesitter/playground")
 
 	-- Git
 	use("lewis6991/gitsigns.nvim")
 
 	-- GPS
-	use({
-		"SmiteshP/nvim-gps",
-		requires = "nvim-treesitter/nvim-treesitter",
-	})
+	use("SmiteshP/nvim-navic")
 
+	-- react
+	use({ "dsznajder/vscode-es7-javascript-react-snippets", run = "yarn install --frozen-lockfile && yarn compile" })
+
+	-- folding
+	use({ "kevinhwang91/nvim-ufo", requires = "kevinhwang91/promise-async" })
+
+	-- http client
+	use("rest-nvim/rest.nvim")
+
+	-- debuging
+	use("mfussenegger/nvim-dap")
+	use("rcarriga/nvim-dap-ui")
+	use("leoluz/nvim-dap-go")
+	use("theHamsta/nvim-dap-virtual-text")
+	use("nvim-telescope/telescope-dap.nvim")
+	use("mfussenegger/nvim-dap-python")
+
+	-- auto closing tag
+	use("windwp/nvim-ts-autotag")
+
+	-- markdown
+	use({
+		"iamcco/markdown-preview.nvim",
+		run = "cd app && npm install",
+		setup = function()
+			vim.g.mkdp_filetypes = { "markdown" }
+		end,
+		ft = { "markdown" },
+	})
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if PACKER_BOOTSTRAP then

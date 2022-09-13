@@ -32,8 +32,14 @@ keymap("n", "<C-Left>", ":vertical resize -2<CR>", opts)
 keymap("n", "<C-Right>", ":vertical resize +2<CR>", opts)
 
 -- Navigate buffers
-keymap("n", "<S-l>", ":bnext<CR>", opts)
-keymap("n", "<S-h>", ":bprevious<CR>", opts)
+keymap("n", "<S-l>", ":BufferLineCycleNext<CR>", opts)
+keymap("n", "<S-h>", ":BufferLineCyclePrev<CR>", opts)
+keymap(
+	"n",
+	"<a-p>",
+	"<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>",
+	opts
+)
 
 -- Move text up and down
 keymap("n", "<A-j>", "<Esc>:m .+1<CR>==gi", opts)
@@ -45,7 +51,7 @@ keymap("i", "<C-s>", "<Esc><cmd>w!<CR>", opts)
 
 -- Insert --
 -- Press jk fast to enter
-keymap("i", "jk", "<ESC>", opts)
+-- keymap("i", "jk", "<ESC>", opts)
 
 -- Visual --
 -- Stay in indent mode
@@ -61,11 +67,11 @@ keymap("v", "p", '"_dP', opts)
 keymap("v", "<C-c>", '"+y', opts)
 keymap("x", "<C-c>", '"+y', opts)
 
+-- Visual Block --
 keymap("x", "J", ":move '>+1<CR>gv-gv", opts)
 keymap("x", "K", ":move '<-2<CR>gv-gv", opts)
 keymap("x", "<A-j>", ":move '>+1<CR>gv-gv", opts)
 keymap("x", "<A-k>", ":move '<-2<CR>gv-gv", opts)
--- Visual Block --
 -- Move text up and down
 
 -- Terminal --
@@ -76,26 +82,70 @@ keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", term_opts)
 -- keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", term_opts)
 
 -- BufferLineGoToBuffer
--- nnoremap <silent><leader>1 <Cmd>BufferLineGoToBuffer 1<CR>
-keymap("n", "<A-1>", "<Cmd>BufferLineGoToBuffer 1<CR>", opts)
-keymap("n", "<A-2>", "<Cmd>BufferLineGoToBuffer 2<CR>", opts)
-keymap("n", "<A-3>", "<Cmd>BufferLineGoToBuffer 3<CR>", opts)
-keymap("n", "<A-4>", "<Cmd>BufferLineGoToBuffer 4<CR>", opts)
-keymap("n", "<A-5>", "<Cmd>BufferLineGoToBuffer 5<CR>", opts)
-keymap("n", "<A-6>", "<Cmd>BufferLineGoToBuffer 6<CR>", opts)
-keymap("n", "<A-7>", "<Cmd>BufferLineGoToBuffer 7<CR>", opts)
+keymap("n", "<A-1>", "<cmd>lua require('bufferline').go_to_buffer(1, true)<cr>", opts)
+keymap("n", "<A-2>", "<Cmd>lua require('bufferline').go_to_buffer(2, true)<CR>", opts)
+keymap("n", "<A-3>", "<Cmd>lua require('bufferline').go_to_buffer(3, true)<CR>", opts)
+keymap("n", "<A-4>", "<Cmd>lua require('bufferline').go_to_buffer(4, true)<CR>", opts)
+keymap("n", "<A-5>", "<Cmd>lua require('bufferline').go_to_buffer(5, true)<CR>", opts)
+keymap("n", "<A-6>", "<Cmd>lua require('bufferline').go_to_buffer(6, true)<CR>", opts)
+keymap("n", "<A-7>", "<Cmd>lua require('bufferline').go_to_buffer(7, true)<CR>", opts)
+keymap("n", "<A-8>", "<Cmd>lua require('bufferline').go_to_buffer(8, true)<CR>", opts)
+keymap("n", "<A-9>", "<Cmd>lua require('bufferline').go_to_buffer(9, true)<CR>", opts)
+keymap("n", "<A-$>", "<Cmd>lua require('bufferline').go_to_buffer(-1, true)<CR>", opts)
 
 -- Close buffers
 keymap("n", "<A-q>", "<cmd>Bdelete!<CR>", opts)
 
 -- opens telescope find file
-
 keymap(
 	"n",
 	"<C-P>",
-	"<cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown{previewer = false})<cr>",
+	-- "<cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown{previewer = false})<cr>",
+	"<cmd>lua require('telescope.builtin').find_files()<cr>",
+	opts
+)
+-- Telescope
+keymap("n", "<C-n>", "<cmd>Telescope file_browser theme=ivy<cr>", opts)
+keymap(
+	"n",
+	"<C-_>",
+	"<cmd>Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top<cr>",
 	opts
 )
 
--- vim.api.nvim_command("set foldmethod=expr")
--- vim.api.nvim_command("set foldexpr=nvim_treesitter#foldexpr()")
+-- hover nvim_treesitter playground
+keymap("n", "<C-i>", "<cmd>TSHighlightCapturesUnderCursor<cr>", opts)
+
+--[[ vim.api.nvim_command("set foldmethod=expr") ]]
+--[[ vim.api.nvim_command("set foldexpr=nvim_treesitter#foldexpr()") ]]
+
+-- hlslens
+-- keymap("n", "n", "<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>", opts)
+-- keymap("n", "N", "<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>", opts)
+-- keymap("n", "*", "*<Cmd>lua require('hlslens').start()<CR>", opts)
+-- keymap("n", "#", [[#<Cmd>lua require('hlslens').start()<CR>]], opts)
+-- keymap("n", "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], opts)
+-- keymap("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], opts)
+
+-- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+
+-- dap
+keymap(
+	"n",
+	"<F5>",
+	":lua require('telescope').extensions.dap.configurations(require('telescope.themes').get_dropdown{previewer = false})<CR>",
+	opts
+)
+keymap("n", "<F10>", ":lua require'dap'.step_over()<CR>", opts)
+keymap("n", "<F3>", ":lua require'dap'.step_into()<CR>", opts)
+keymap("n", "<F12>", ":lua require'dap'.step_out()<CR>", opts)
+keymap("n", "<C-b>", ":lua require'dap'.toggle_breakpoint()<CR>", opts)
+keymap("n", "<C-d>b", ":lua require'dap'.toggle_breakpoint()<CR>", opts)
+keymap("n", "<leader>dr", ":lua require'dap'.repl.open()<CR>", opts)
+
+-- split
+-- Split window
+keymap("n", "ss", ":split<Return><C-w>w", opts)
+keymap("n", "sv", ":vsplit<Return><C-w>w", opts)

@@ -25,6 +25,7 @@ null_ls.setup({
 		formatting.stylua,
 		diagnostics.php,
 		code_actions.eslint,
+		code_actions.gitsigns,
 	},
 	on_attach = function(client, bufnr)
 		if client.supports_method("textDocument/formatting") then

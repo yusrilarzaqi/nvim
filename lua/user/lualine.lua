@@ -1,28 +1,9 @@
--- gps
-local status_ok_gps, gps = pcall(require, "nvim-gps")
-if not status_ok_gps then
+-- colors
+--[[ local colors = require("kanagawa.colors").setup() ]]
+local status_ok_navic, navic = pcall(require, "nvim-navic")
+if not status_ok_navic then
 	return
 end
-
-local function gps_content()
-	local opts = {
-		disable_icons = false,
-		separator = " > ",
-		depth = 0,
-		depth_limit_indicator = "..",
-	}
-	if gps.is_available() then
-		-- return gps.get_location()
-		return gps.get_location(opts)
-	else
-		return ""
-	end
-end
-
-local gps_line = {
-	gps_content,
-	-- cond = gps.is_available,
-}
 
 -- python env
 local function python_venv()
@@ -74,66 +55,69 @@ local diagnostics = {
 	"diagnostics",
 	sources = { "nvim_diagnostic" },
 	sections = { "error", "warn", "info", "hint" },
-	symbols = { error = " ", warn = " ", info = "", hint = " " },
-	colored = true,
+	symbols = { error = " ", warn = " ", info = " ", hint = " " },
+	colored = false,
 	update_in_insert = true,
 	always_visible = false,
 }
 
 local diff = {
 	"diff",
-	colored = true,
+	colored = false,
 	symbols = { added = "+", modified = "~", removed = "-" },
+	--[[ separator = { right = "" }, ]]
 	cond = conditions.hide_in_width,
 }
 
 local mode = {
 	"mode",
 	fmt = function(str)
-		return str:sub(1, 1)
+		--[[ return str:sub(1, 1) ]]
+		return "-- " .. str:lower() .. " --"
 	end,
-	-- separator = { left = "", right = "" },
-	-- separator = { right = "", left = "" },
+	--[[ separator = { left = "", right = "" }, ]]
+	--[[ separator = { right = "", left = "" }, ]]
+	--[[ separator = { right = "" }, ]]
 	padding = 1,
 }
 
-local filetype = {
-	"filetype",
-	-- icons_enabled = true,
-	icon_only = true,
-	-- icon = nil,
-}
+--[[ local filetype = { ]]
+--[[ 	"filetype", ]]
+--[[ 	-- icons_enabled = true, ]]
+--[[ 	icon_only = true, ]]
+--[[ 	-- icon = nil, ]]
+--[[ } ]]
 
--- local filesize = {
--- 	"filesize",
--- 	cond = conditions.buffer_not_empty,
--- }
+local filesize = {
+	"filesize",
+	cond = conditions.buffer_not_empty,
+}
 
 local branch = {
 	"branch",
-	-- icons_enabled = true,
-	-- icon = " שׂ",
-	icon = "",
-	-- icon = "  ",
-	-- icon = "",
+	--[[ icons_enabled = true, ]]
+	--[[ icon = " שׂ", ]]
+	--[[ icon = "", ]]
+	icon = "",
+	--[[ icon = "", ]]
 	cond = conditions.buffer_not_empty,
+	--[[ separator = { right = "" }, ]]
 }
--- local location = {
--- 	"location",
--- 	padding = 1,
--- 	colored = true,
--- 	separator = { left = "", right = "" },
--- }
+
+local location = {
+	"location",
+	padding = 0,
+	colored = false,
+	--[[ separator = { left = "", right = "" }, ]]
+}
 
 local fileformat = {
 	"fileformat",
+	--[[      ]]
 	symbols = {
-		unix = " ", -- e712
-		dos = " ", -- e70f
-		mac = " ", -- e711
-		bsd = " ",
+		unix = "", -- README
 	},
-	-- colored = false,
+	colored = false,
 }
 
 local filename = {
@@ -151,58 +135,80 @@ local filename = {
 		readonly = " [!]", -- Text to show when the file is non-modifiable or readonly.
 		unnamed = " [No Name]", -- Text to show for unnamed buffers.
 	},
-	color = { fg = "#87afaf" },
+	--[[ separator = { left = "" }, ]]
 }
 
 local encoding = {
 	"encoding",
 	fmt = string.upper,
+	--[[ separator = { right = "" }, ]]
 }
 
 -- cool function for progress
--- local progress = function()
--- 	local current_line = vim.fn.line(".")
--- 	local total_lines = vim.fn.line("$")
--- 	local chars = { "__", "▁▁", "▂▂", "▃▃", "▄▄", "▅▅", "▆▆", "▇▇", "██" }
--- 	local line_ratio = current_line / total_lines
--- 	local index = math.ceil(line_ratio * #chars)
--- 	return chars[index]
--- end
+--[[ local progress = function() ]]
+--[[ 	local current_line = vim.fn.line(".") ]]
+--[[ 	local total_lines = vim.fn.line("$") ]]
+--[[ 	local chars = { "__", "▁▁", "▂▂", "▃▃", "▄▄", "▅▅", "▆▆", "▇▇", "██" } ]]
+--[[ 	local line_ratio = current_line / total_lines ]]
+--[[ 	local index = math.ceil(line_ratio * #chars) ]]
+--[[ 	return chars[index] ]]
+--[[ end ]]
 
 -- local spaces = function()
--- return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
+-- 	--[[ return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth") ]]
+-- 	return vim.api.nvim_buf_get_option(0, "shiftwidth")
 -- end
+
+local windows = {
+	"windows",
+
+	mode = 0, -- 0: Shows window name
+	-- 1: Shows window index
+	-- 2: Shows window name + window index
+
+	max_length = vim.o.columns * 2 / 3, -- Maximum width of windows component,
+	-- it can also be a function that returns
+	-- the value of `max_length` dynamically.
+	filetype_names = {
+		TelescopePrompt = "Telescope",
+		dashboard = "Dashboard",
+		packer = "Packer",
+		alpha = "Alpha",
+	}, -- Shows specific window name for that filetype ( { `filetype` = `window_name`, ... } )
+
+	disabled_buftypes = { "quickfix", "prompt" }, -- Hide a window if its buffer's type is disabled
+}
 
 lualine.setup({
 	options = {
 		icons_enabled = true,
 		theme = "auto",
-		-- component_separators = { left = '', right = ''},
+		--[[ component_separators = { left = "", right = "" }, ]]
+		--[[ component_separators = { left = "│", right = "│" }, ]]
 		component_separators = { left = "", right = "" },
-		-- section_separators = { left = "", right = "" },
-		-- section_separators = { left = "▀", right = "▀" },
-		-- section_separators = { left = "", right = "" },
-		section_separators = { left = "", right = "" },
-		-- section_separators = { left = "", right = "" },
+		section_separators = { left = "", right = "" }, --     ▀ ▀  
 		disabled_filetypes = { "alpha", "dashboard", "NvimTree", "Outline" },
 		always_divide_middle = true,
 	},
 	sections = {
-		lualine_a = { mode },
-		lualine_b = { branch, diff },
-		lualine_c = { diagnostics, gps_line },
-		lualine_x = { filetype, filename },
-		lualine_y = { encoding, fileformat },
-		lualine_z = { python_venv },
+		lualine_a = { branch },
+		lualine_b = { diff },
+		lualine_c = { mode, { navic.get_location, cond = navic.is_available } },
+		lualine_x = { diagnostics },
+		lualine_y = { windows, python_venv },
+		lualine_z = { fileformat, encoding, "gitsign_status" },
 	},
 	inactive_sections = {
-		lualine_a = {},
+		lualine_a = { filesize },
 		lualine_b = {},
 		lualine_c = { filename },
-		lualine_x = { "location" },
+		lualine_x = { location },
 		lualine_y = {},
 		lualine_z = {},
 	},
 	tabline = {},
-	extensions = {},
+	extensions = {
+		"nvim-tree",
+		"quickfix",
+	},
 })

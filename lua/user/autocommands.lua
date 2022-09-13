@@ -1,8 +1,8 @@
 vim.cmd([[
   augroup _general_settings
     autocmd!
-    autocmd FileType qf,help,man,lspinfo nnoremap <silent> <buffer> q :close<CR> 
-    autocmd TextYankPost * silent!lua require('vim.highlight').on_yank({higroup = 'Visual', timeout = 200}) 
+    autocmd FileType qf,help,man,lspinfo nnoremap <silent> <buffer> q :close<CR>
+    autocmd TextYankPost * silent!lua require('vim.highlight').on_yank({higroup = 'Visual', timeout = 200})
     autocmd BufWinEnter * :set formatoptions-=cro
     autocmd FileType qf set nobuflisted
   augroup end
@@ -22,6 +22,21 @@ vim.cmd([[
     autocmd!
     autocmd User AlphaReady set showtabline=0 | autocmd BufUnload <buffer> set showtabline=2
   augroup end
+
+  augroup _view
+    autocmd BufWinLeave *.* mkview
+  augroup end
+
+  augroup _markdown
+   autocmd!
+   autocmd FileType markdown setlocal nonumber
+   autocmd FileType markdown setlocal norelativenumber
+   autocmd FileType markdown setlocal signcolumn=no
+   autocmd FileType markdown setlocal foldcolumn=0
+   " autocmd FileType markdown setlocal spell
+   autocmd FileType markdown loadview
+  augroup end
+
 ]])
 
 -- Autoformat

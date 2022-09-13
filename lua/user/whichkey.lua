@@ -25,14 +25,14 @@ local setup = {
 	},
 	-- add operators that will trigger motion and text object completion
 	-- to enable all native operators, set the preset / operators plugin above
-	-- operators = { gc = "Comments" },
-	key_labels = {
-		-- override the label used to display some keys. It doesn't effect WK in any other way.
-		-- For example:
-		-- ["<space>"] = "SPC",
-		-- ["<cr>"] = "RET",
-		-- ["<tab>"] = "TAB",
-	},
+	operators = { gc = "Comments" },
+	-- key_labels = {
+	-- override the label used to display some keys. It doesn't effect WK in any other way.
+	-- For example:
+	-- ["<space>"] = "SPC",
+	-- ["<cr>"] = "RET",
+	-- ["<tab>"] = "TAB",
+	-- },
 	icons = {
 		breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
 		separator = "➜", -- symbol used between a key and it's label
@@ -43,16 +43,16 @@ local setup = {
 		scroll_up = "<c-u>", -- binding to scroll up inside the popup
 	},
 	window = {
-		border = "single", -- none, single, double, shadow
+		border = "none", -- none, single, double, shadow
 		position = "top", -- bottom, top
-		margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
-		padding = { 2, 1, 1, 2 }, -- extra window padding [top, right, bottom, left]
-		winblend = 0,
+		-- margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
+		padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
+		-- winblend = 10,
 	},
 	layout = {
 		height = { min = 4, max = 25 }, -- min and max height of the columns
 		width = { min = 20, max = 50 }, -- min and max width of the columns
-		spacing = 3, -- spacing between columns
+		spacing = 5, -- spacing between columns
 		align = "center", -- align columns left, center or right
 	},
 	ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
@@ -85,16 +85,39 @@ local mappings = {
 		"Buffers",
 	},
 	["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
-	["w"] = { "<cmd>w!<CR>", "Save" },
+	["w"] = { "<cmd>luafile %<CR>", "Lua Reload" },
 	["q"] = { "<cmd>q!<CR>", "Quit" },
 	["c"] = { "<cmd>Bdelete!<CR>", "Close Buffer" },
 	["h"] = { "<cmd>nohlsearch<CR>", "No Highlight" },
-	["f"] = {
-		"<cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown{previewer = false})<cr>",
-		"Find files",
-	},
 	["F"] = { "<cmd>Telescope live_grep theme=ivy<cr>", "Find Text" },
+	["S"] = { "<cmd>Telescope grep_string<cr>", "Grep String" },
 	["P"] = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
+
+	d = {
+		name = "Debuger",
+		r = { "<cmd>lua require'dap'.repl.open()<CR>", "repl" },
+		C = {
+			"<cmd>lua require'dap'.toggle_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+			"set check point",
+		},
+		l = {
+			"<cmd>lua require'dap'.toggle_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>",
+			"set check point",
+		},
+		o = { "<cmd>lua require('dapui').open()<CR>", "Open" },
+		c = { "<cmd>lua require('dapui').close()<CR>", "Close" },
+		t = {
+			name = "Telescope",
+			c = { "<cmd>Telescope dap command theme=dropdown<cr>", "Telecopse Dap Commands" },
+		},
+		g = { "<cmd>lua require('dap-go').debug_test()<CR>", "Go Debug" },
+		p = {
+			name = "Debug Python",
+			m = { "<cmd>lua require('dap-python').test_method()<cr>", "Test Method" },
+			c = { "<cmd>lua require('dap-python').test_class()<CR>", "Test Class" },
+			d = { "<cmd>lua require('dap-python').debug_selection()<CR>", "Debug Selection" },
+		},
+	},
 
 	p = {
 		name = "Packer",
@@ -111,6 +134,13 @@ local mappings = {
 		j = { "<cmd>lua require 'gitsigns'.next_hunk()<cr>", "Next Hunk" },
 		k = { "<cmd>lua require 'gitsigns'.prev_hunk()<cr>", "Prev Hunk" },
 		l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },
+		t = {
+			name = "Toggle",
+			d = { "<cmd>lua require('gitsigns').toggle_deleted()<cr>", "Toggle Show deleted" },
+			l = { "<cmd>lua require('gitsigns').toggle_linehl()<cr>", "Toggle line hightlight" },
+			n = { "<cmd>lua require('gitsigns').toggle_numhl()<cr>", "Toggle number hightlight" },
+			s = { "<cmd>lua require('gitsigns').toggle_signs()<cr>", "Toggle sign columns hightlight" },
+		},
 		p = { "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", "Preview Hunk" },
 		r = { "<cmd>lua require 'gitsigns'.reset_hunk()<cr>", "Reset Hunk" },
 		R = { "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", "Reset Buffer" },
@@ -132,15 +162,16 @@ local mappings = {
 		name = "LSP",
 		a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
 		d = {
-			"<cmd>Telescope lsp_document_diagnostics<cr>",
-			"Document Diagnostics",
+			"<cmd>Telescope diagnostics<cr>",
+			"Diagnostics",
 		},
 		w = {
-			"<cmd>Telescope lsp_workspace_diagnostics<cr>",
+			"<cmd>Telescope lsp_workspace_symbols<cr>",
 			"Workspace Diagnostics",
 		},
-		f = { "<cmd>lua vim.lsp.buf.formatting()<cr>", "Format" },
+		f = { "<cmd>lua vim.lsp.buf.formatting_sync()<cr>", "Format" },
 		i = { "<cmd>LspInfo<cr>", "Info" },
+		t = { "<cmd>Telescope lsp_type_definitions<cr>", "Type Definition" },
 		I = { "<cmd>LspInstallInfo<cr>", "Installer Info" },
 		j = {
 			"<cmd>lua vim.lsp.diagnostic.goto_next()<CR>",
@@ -153,12 +184,13 @@ local mappings = {
 		l = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
 		q = { "<cmd>lua vim.lsp.diagnostic.set_loclist()<cr>", "Quickfix" },
 		r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
-		s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
+		s = { "<cmd>Telescope lsp_document_symbols theme=dropdown<cr>", "Document Symbols" },
 		S = {
 			"<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
 			"Workspace Symbols",
 		},
 	},
+
 	s = {
 		name = "Search",
 		b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
@@ -173,13 +205,31 @@ local mappings = {
 
 	t = {
 		name = "Terminal",
+		c = { "<cmd>lua _COMPEL_TOGGLE()<cr>", "Comple C++" },
 		n = { "<cmd>lua _NODE_TOGGLE()<cr>", "Node" },
 		u = { "<cmd>lua _NCDU_TOGGLE()<cr>", "NCDU" },
 		t = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
 		p = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
+		r = { "<cmd>lua _RANGER_TOGGLE()<cr>", "Ranger" },
 		f = { "<cmd>ToggleTerm direction=float<cr>", "Float" },
 		h = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", "Horizontal" },
 		v = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Vertical" },
+	},
+
+	o = {
+		name = "toggler",
+		a = { "<cmd>set autochdir!<cr>", "Toggle AutoChdir" },
+		r = { "<cmd>lua require('rest-nvim').run()<cr>", "Rest" },
+		w = { "<cmd>set wrap!<cr>", "Toggle Wrap" },
+		l = { "<cmd>loadview<cr>", "Load View" },
+		n = { "<cmd>setlocal number!<cr><cmd>setlocal norelativenumber!<cr>", "disable number" },
+	},
+
+	m = {
+		name = "Markdown",
+		n = { "<cmd>MarkdownPreview<cr>", "Markdown Preview Start" },
+		s = { "<cmd>MarkdownPreviewStop<cr>", "Markdown Preview Stop" },
+		t = { "<cmd>MarkdownPreviewToggle<cr>", "Markdown Preview Toggle" },
 	},
 }
 

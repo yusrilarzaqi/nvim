@@ -2,7 +2,7 @@
 -- each of these are documented in `:help nvim-tree.OPTION_NAME`
 -- vim.g.nvim_tree_icons = {
 local icons = {
-	default = "",
+	default = "",
 	symlink = "",
 	git = {
 		unstaged = "",
@@ -17,12 +17,14 @@ local icons = {
 		ignored = "◌",
 	},
 	folder = {
-		-- arrow_open = "",
-		-- arrow_closed = "",
-		arrow_open = "",
-		arrow_closed = "",
-		default = "",
-		open = "",
+		arrow_open = "",
+		arrow_closed = "",
+		--[[ arrow_open = "", ]]
+		--[[ arrow_closed = "", ]]
+		-- default = "",
+		default = "",
+		-- open = "",
+		open = "",
 		empty = "",
 		empty_open = "",
 		symlink = "",
@@ -42,102 +44,107 @@ end
 local tree_cb = nvim_tree_config.nvim_tree_callback
 
 nvim_tree.setup({
+	sync_root_with_cwd = true,
+	respect_buf_cwd = true,--[[ popup_border_style = "rounded", ]]
 	auto_reload_on_write = true,
 	disable_netrw = true,
 	hijack_netrw = true,
-	open_on_setup = true,
+	open_on_setup = false,
 	ignore_ft_on_setup = {
-		"startify",
-		"dashboard",
 		"alpha",
 	},
-	-- auto_close = true,
 	open_on_tab = false,
-	hijack_cursor = false,
+	hijack_cursor = true,
+	hijack_unnamed_buffer_when_opening = false,
 	update_cwd = true,
-	-- update_to_buf_dir = {
-	--   enable = true,
-	--   auto_open = true,
-	-- },
+	--[[ update_to_buf_dir = { ]]
+	--[[ 	enable = true, ]]
+	--[[ 	auto_open = true, ]]
+	--[[ }, ]]
 	diagnostics = {
-		enable = true,
+		enable = false,
 		icons = {
 			hint = "",
 			info = "",
 			warning = "",
-			error = "",
+			error = " ",
 		},
 		show_on_dirs = true,
 	},
 	update_focused_file = {
 		enable = true,
-		update_cwd = true,
-		ignore_list = {},
+		update_root = true,
+		update_cwd = false,
+		--[[ ignore_list = {}, ]]
 	},
-	system_open = {
-		cmd = nil,
-		args = {},
-	},
+	--[[ system_open = { ]]
+	--[[ 	cmd = nil, ]]
+	--[[ 	args = {}, ]]
+	--[[ }, ]]
 	filters = {
-		dotfiles = false,
-		custom = { ".git", "__pycache__" },
+		dotfiles = true,
+		custom = { "^.git$", "__pycache__" },
 	},
-	git = {
-		enable = true,
-		ignore = true,
-		timeout = 500,
-	},
+	--[[ git = { ]]
+	--[[ 	enable = true, ]]
+	--[[ 	ignore = true, ]]
+	--[[ 	timeout = 500, ]]
+	--[[ }, ]]
+	-- git_status = {
+	-- 	window = {
+	-- 		position = "float",
+	-- 	},
+	-- },
 	view = {
-		width = 30,
-		height = 30,
+		adaptive_size = true,
 		hide_root_folder = true,
 		side = "left",
-		-- auto_resize = true,
+		signcolumn = "yes",
 		mappings = {
 			custom_only = false,
 			list = {
+				{ key = "u", action = "dir_up" },
+				{ key = "D", action = "dir_down" },
 				{ key = { "l", "<CR>", "o" }, cb = tree_cb("edit") },
+				{ key = "L", cb = tree_cb("cd") },
 				{ key = "h", cb = tree_cb("close_node") },
 				{ key = "v", cb = tree_cb("vsplit") },
+				{ key = "s", cb = tree_cb("split") },
+				{ key = "t", cb = tree_cb("tabnew") },
+				{ key = "i", cb = tree_cb("preview") },
 			},
 		},
-		number = false,
-		relativenumber = false,
-		signcolumn = "yes",
 	},
 	trash = {
 		cmd = "trash",
 		require_confirm = true,
 	},
 	renderer = {
+		highlight_git = false,
+		highlight_opened_files = "none",
+		group_empty = true,
 		indent_markers = {
 			enable = true,
-			icons = {
-				-- └
-				-- corner = "┗ ",
-				corner = "└─",
-				-- edge = "┃ ",
-				edge = "│ ",
-				-- edge = "▎",
-				-- edge = "│ ",
-				none = " ",
-			},
+			--[[ icons = { ]]
+			--[[ 	-- └ ]]
+			--[[ 	-- corner = "┗ ", ]]
+			--[[ 	corner = "└", ]]
+			--[[ 	-- corner = "└─", ]]
+			--[[ 	-- edge = "|", ]]
+			--[[ 	-- edge = "┃ ", ]]
+			--[[ 	edge = "│", ]]
+			--[[ 	-- edge = "▎", ]]
+			--[[ 	-- edge = "│ ", ]]
+			--[[ 	none = "", ]]
+			--[[ }, ]]
 		},
 		icons = {
 			webdev_colors = true,
 			git_placement = "after",
+			show = {
+				folder_arrow = false,
+			},
 			glyphs = icons,
 		},
 	},
-	-- quit_on_open = 0,
-	-- git_hl = 1,
-	-- disable_window_picker = 0,
-	-- root_folder_modifier = ":t",
-	-- show_icons = {
-	--   git = 1,
-	--   folders = 1,
-	--   files = 1,
-	--   folder_arrows = 1,
-	--   tree_width = 30,
-	-- },
 })

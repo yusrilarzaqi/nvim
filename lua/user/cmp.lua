@@ -43,7 +43,21 @@ local kind_icons = {
 	Operator = "",
 	TypeParameter = "",
 }
+
 -- find more here: https://www.nerdfonts.com/cheat-sheet
+-- border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
+local function border(hl_name)
+	return {
+		{ "┏", hl_name },
+		{ "━", hl_name },
+		{ "┓", hl_name },
+		{ "┃", hl_name },
+		{ "┛", hl_name },
+		{ "━", hl_name },
+		{ "┗", hl_name },
+		{ "┃", hl_name },
+	}
+end
 
 cmp.setup({
 	snippet = {
@@ -62,7 +76,6 @@ cmp.setup({
 			i = cmp.mapping.abort(),
 			c = cmp.mapping.close(),
 		}),
-
 		-- Accept currently selected item. If none selected, `select` first item.
 		-- Set `select` to `false` to only confirm explicitly selected items.
 		["<CR>"] = cmp.mapping.confirm({ select = true }),
@@ -99,14 +112,16 @@ cmp.setup({
 		fields = { "kind", "abbr", "menu" },
 		format = function(entry, vim_item)
 			-- Kind icons
+			--[[ vim_item.kind = string.format(kind_icons[vim_item.kind], "%s") ]]
 			vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
-			-- vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
+			--[[ vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind ]]
 			vim_item.menu = ({
-				nvim_lsp = "[LSP]",
-				luasnip = "[Snippet]",
-				buffer = "[Buffer]",
-				path = "[Path]",
+				nvim_lsp = "【LSP】",
+				luasnip = "【Snippet】",
+				buffer = "【buffer】",
+				path = "【Path】",
 			})[entry.source.name]
+			--[[ vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) ]]
 			return vim_item
 		end,
 	},
@@ -114,23 +129,27 @@ cmp.setup({
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
 		{ name = "path" },
-		{ name = "buffer" },
+		{
+			name = "buffer",
+			options = {
+				get_bufnrs = function()
+					return vim.api.nvim_list_bufs()
+				end,
+			},
+		},
 	},
 	confirm_opts = {
 		behavior = cmp.ConfirmBehavior.Replace,
 		select = false,
 	},
-	-- window = {
-	--   -- documentation = "native"
-	--   documentation = cmp.config.window.bordered(),
-	-- },
-	-- documentation = {
-	--   border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-	--   border = { "┍", "━", "┑", "│", "┙", "━", "┕", "│" },
-	-- border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
-	--   border = 'single',
-	-- },
+	window = {
+		documentation = cmp.config.window.bordered(),
+		border = border("CmpBorder"),
+	},
 	experimental = {
-		ghost_text = false,
+		ghost_text = true,
+	},
+	view = {
+		entries = "native",
 	},
 })
