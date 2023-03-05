@@ -5,29 +5,36 @@ local icons = {
 	default = "",
 	symlink = "",
 	git = {
-		unstaged = "",
-		-- unstaged = "✗",
-		-- staged = "S",
-		staged = "✓",
+		unstaged = "",
+		staged = "",
 		unmerged = "",
-		renamed = "➜",
+		renamed = "凜",
 		deleted = "",
-		-- untracked = "ﲉ",
 		untracked = "U",
 		ignored = "◌",
+
+		--[[ unstaged = "", ]]
+		-- unstaged = "✗",
+		--[[ staged = "✓", ]]
+		-- staged = "S",
+		--[[ renamed = "➜", ]]
+		-- untracked = "ﲉ",
 	},
 	folder = {
 		arrow_open = "",
 		arrow_closed = "",
+		default = "",
+		open = "",
+		empty = "",
+		empty_open = "",
+		symlink = "",
+		symlink_open = "",
+
+		--[[ empty_open = "", ]]
+		-- open = "",
 		--[[ arrow_open = "", ]]
 		--[[ arrow_closed = "", ]]
 		-- default = "",
-		default = "",
-		-- open = "",
-		open = "",
-		empty = "",
-		empty_open = "",
-		symlink = "",
 	},
 }
 
@@ -49,18 +56,8 @@ nvim_tree.setup({
 	auto_reload_on_write = true,
 	disable_netrw = true,
 	hijack_netrw = true,
-	open_on_setup = false,
-	ignore_ft_on_setup = {
-		"alpha",
-	},
-	open_on_tab = false,
 	hijack_cursor = true,
-	hijack_unnamed_buffer_when_opening = false,
 	update_cwd = true,
-	--[[ update_to_buf_dir = { ]]
-	--[[ 	enable = true, ]]
-	--[[ 	auto_open = true, ]]
-	--[[ }, ]]
 	diagnostics = {
 		enable = false,
 		icons = {
@@ -75,26 +72,15 @@ nvim_tree.setup({
 		enable = true,
 		update_root = true,
 		update_cwd = false,
-		--[[ ignore_list = {}, ]]
 	},
-	--[[ system_open = { ]]
-	--[[ 	cmd = nil, ]]
-	--[[ 	args = {}, ]]
-	--[[ }, ]]
 	filters = {
 		dotfiles = true,
-		custom = { "^.git$", "__pycache__" },
+		custom = { "^.git$", "__pycache__", "node_modules", "^\\.cache$" },
 	},
-	--[[ git = { ]]
-	--[[ 	enable = true, ]]
-	--[[ 	ignore = true, ]]
-	--[[ 	timeout = 500, ]]
-	--[[ }, ]]
-	-- git_status = {
-	-- 	window = {
-	-- 		position = "float",
-	-- 	},
-	-- },
+	system_open = { cmd = nil, args = {} },
+	git = {
+		ignore = false,
+	},
 	view = {
 		adaptive_size = true,
 		hide_root_folder = true,
@@ -114,29 +100,31 @@ nvim_tree.setup({
 				{ key = "i", cb = tree_cb("preview") },
 			},
 		},
+		float = {
+			enable = ture,
+			open_win_config = {
+				relative = "editor",
+				border = "rounded",
+				width = 30,
+				height = 30,
+				row = 1,
+				col = 1,
+			},
+		},
 	},
 	trash = {
 		cmd = "trash",
 		require_confirm = true,
 	},
 	renderer = {
-		highlight_git = false,
-		highlight_opened_files = "none",
+		highlight_git = true,
+		highlight_opened_files = "bold",
+		full_name = false,
+		root_folder_modifier = ":t",
 		group_empty = true,
+		indent_width = 2,
 		indent_markers = {
 			enable = true,
-			--[[ icons = { ]]
-			--[[ 	-- └ ]]
-			--[[ 	-- corner = "┗ ", ]]
-			--[[ 	corner = "└", ]]
-			--[[ 	-- corner = "└─", ]]
-			--[[ 	-- edge = "|", ]]
-			--[[ 	-- edge = "┃ ", ]]
-			--[[ 	edge = "│", ]]
-			--[[ 	-- edge = "▎", ]]
-			--[[ 	-- edge = "│ ", ]]
-			--[[ 	none = "", ]]
-			--[[ }, ]]
 		},
 		icons = {
 			webdev_colors = true,
@@ -145,6 +133,39 @@ nvim_tree.setup({
 				folder_arrow = false,
 			},
 			glyphs = icons,
+		},
+	},
+	actions = {
+		use_system_clipboard = true,
+		change_dir = {
+			enable = true,
+			global = false,
+			restrict_above_cwd = false,
+		},
+		expand_all = {
+			max_folder_discovery = 300,
+			exclude = {},
+		},
+		file_popup = {
+			open_win_config = {
+				col = 1,
+				row = 1,
+				relative = "cursor",
+				border = "shadow",
+				style = "minimal",
+			},
+		},
+		open_file = {
+			quit_on_open = false,
+			resize_window = true,
+			window_picker = {
+				enable = true,
+				chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+				exclude = {
+					filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
+					buftype = { "nofile", "terminal", "help" },
+				},
+			},
 		},
 	},
 })

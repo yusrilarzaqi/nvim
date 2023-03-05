@@ -56,7 +56,7 @@ end
 
 local function lsp_highlight_document(client)
 	-- Set autocommands conditional on server_capabilities
-	if client.resolved_capabilities.document_highlight then
+	if client.server_capabilities.document_highlight then
 		vim.api.nvim_exec(
 			[[
       augroup lsp_document_highlight
@@ -79,27 +79,23 @@ local function lsp_keymaps(bufnr)
 	keymap(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
 	keymap(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
 	keymap(bufnr, "n", "rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-	--[[ keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts) ]]
 	keymap(bufnr, "n", "gr", "<cmd>Telescope lsp_references theme=dropdown<CR>", opts)
 	keymap(bufnr, "n", "fn", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
-	keymap(bufnr, "n", "fl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 	keymap(bufnr, "n", "[d", '<cmd>lua vim.diagnostic.goto_prev({ border = "rounded" })<CR>', opts)
-	keymap(bufnr, "n", "gl", '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics({ border = "rounded" })<CR>', opts)
+	-- keymap(bufnr, "n", "gl", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>", opts)
+	keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 	keymap(bufnr, "n", "]d", '<cmd>lua vim.diagnostic.goto_next({ border = "rounded" })<CR>', opts)
-	-- keymap(bufnr, "n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
+	keymap(bufnr, "n", "<c-q>", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
 	-- vim.cmd([[ command! Format execute 'lua vim.lsp.buf.formatting()' ]])
 end
 
 M.on_attach = function(client, bufnr)
-	if
-		client.name == "tsserver"
-		or client.name == "jsonls"
-		or client.name == "html"
-		or client.name == "sumneko_lua"
-	then
-		client.resolved_capabilities.document_formatting = false
+	if client.name == "tsserver" or client.name == "jsonls" or client.name == "html" or client.name == "luals" then
+		client.server_capabilities.documentFormattingProvider = false
 	end
-	navic.attach(client, bufnr)
+	if client.server_capabilities.documentSymbolProvider then
+		navic.attach(client, bufnr)
+	end
 	lsp_keymaps(bufnr)
 	lsp_highlight_document(client)
 end
@@ -112,6 +108,8 @@ end
 
 -- ufo
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.offsetEncoding = { "utf-16" }
+
 capabilities.textDocument.foldingRange = {
 	dynamicRegistration = true,
 	lineFoldingOnly = true,
@@ -122,9 +120,19 @@ if not status_ok then
 	return
 end
 
-M.capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
+M.capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 
--- vim.cmd [[ command! LspToggleAutoFormat execute 'lua require("user.lsp.handlers").toggle_format_on_save()' ]]
--- vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
+local lsp_util = vim.lsp.util
+
+function M.code_action_listener()
+	local context = { diagnostics = vim.lsp.diagnostic.get_line_diagnostics() }
+	local params = lsp_util.make_range_params()
+	params.context = context
+	vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, _, result) end)
+end
+
+-- vim.cmd([[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]])
+-- vim.cmd([[autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335]])
+-- vim.cmd([[autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]])
 
 return M

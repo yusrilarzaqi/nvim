@@ -1,6 +1,8 @@
 return {
-  filetypes = {
-    "html",
-    "htmldjango"
-  },
+	filetypes = {
+		"html",
+		"htmldjango",
+		"php",
+		"ejs",
+	},
 }

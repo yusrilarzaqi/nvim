@@ -23,20 +23,19 @@ dashboard.section.buttons.val = {
 	dashboard.button("q", "  Quit Neovim", ":qa<CR>"),
 }
 
-local function getJokes()
-	return "Hello world"
-end
+-- local Job = require("plenary.job")
 
-local function footer()
-	-- NOTE: requires the fortune-mod package to work
-	-- local handle = io.popen("fortune")
-	-- local fortune = handle:read("*a")
-	-- handle:close()
-	-- return fortune
-	return getJokes()
-end
-
-dashboard.section.footer.val = footer()
+--Job
+--	:new({
+--		"curl",
+--		"wttr.in/Ungaran?format=%C+%f&lang=id",
+--		on_exit = function(j, _)
+--			--[[ print(vim.inspect(j:result()[1])) ]]
+--			--[[ local footer_text = j:result()[1] ]]
+--			dashboard.section.footer.val = j:result()[1]
+--		end,
+--	})
+--	:start() -- or start()
 
 dashboard.section.footer.opts.hl = "Type"
 dashboard.section.header.opts.hl = "Include"

@@ -15,6 +15,11 @@ local check_backspace = function()
 	return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
 end
 
+local lspkind_status_ok, lspkind = pcall(require, "lspkind")
+if not lspkind_status_ok then
+	return
+end
+
 --   פּ ﯟ   some other good icons
 local kind_icons = {
 	Text = "",
@@ -43,22 +48,9 @@ local kind_icons = {
 	Operator = "",
 	TypeParameter = "",
 }
-
 -- find more here: https://www.nerdfonts.com/cheat-sheet
--- border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
-local function border(hl_name)
-	return {
-		{ "┏", hl_name },
-		{ "━", hl_name },
-		{ "┓", hl_name },
-		{ "┃", hl_name },
-		{ "┛", hl_name },
-		{ "━", hl_name },
-		{ "┗", hl_name },
-		{ "┃", hl_name },
-	}
-end
-
+--[[ local border = { "🭽", " ", "🭾", "▕", "🭿", " ", "🭼", "▏" } ]]
+--[[ local border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" } ]]
 cmp.setup({
 	snippet = {
 		expand = function(args)
@@ -111,45 +103,76 @@ cmp.setup({
 	formatting = {
 		fields = { "kind", "abbr", "menu" },
 		format = function(entry, vim_item)
-			-- Kind icons
-			--[[ vim_item.kind = string.format(kind_icons[vim_item.kind], "%s") ]]
-			vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
-			--[[ vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind ]]
-			vim_item.menu = ({
-				nvim_lsp = "【LSP】",
-				luasnip = "【Snippet】",
-				buffer = "【buffer】",
-				path = "【Path】",
-			})[entry.source.name]
-			--[[ vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) ]]
-			return vim_item
+			local kind = lspkind.cmp_format({
+				mode = "symbol_text",
+				menu = {
+					buffer = "Buffer",
+					nvim_lsp = "LSP",
+					luasnip = "Snip",
+					nvim_lua = "Lua",
+					latex_symbols = "Latex",
+					cmp_tabnine = "TabNine",
+				},
+				maxwidth = 50,
+			})(entry, vim_item)
+			local strings = vim.split(kind.kind, "%s", { trimempty = true })
+			kind.kind = " " .. strings[1] .. " "
+			-- kind.menu = strings[2]
+
+			return kind
 		end,
 	},
 	sources = {
 		{ name = "nvim_lsp" },
+		{ name = "cmp_tabnine" },
 		{ name = "luasnip" },
-		{ name = "path" },
 		{
 			name = "buffer",
-			options = {
-				get_bufnrs = function()
+			option = {
+				get_bufrnrs = function()
 					return vim.api.nvim_list_bufs()
 				end,
 			},
 		},
+		{ name = "path" },
 	},
 	confirm_opts = {
 		behavior = cmp.ConfirmBehavior.Replace,
 		select = false,
 	},
 	window = {
-		documentation = cmp.config.window.bordered(),
-		border = border("CmpBorder"),
+		documentation = {
+			--[[ border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }, ]]
+			border = border,
+		},
+		completion = {
+			winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+			col_offset = -3,
+			side_padding = 0,
+		},
 	},
 	experimental = {
 		ghost_text = true,
+		native_menu = false,
+	},
+})
+
+-- `/` cmdline setup.
+cmp.setup.cmdline("/", {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = {
+		{ name = "buffer" },
 	},
 	view = {
-		entries = "native",
+		entries = { name = "custom", selection_order = "near_cursor" },
 	},
+})
+-- `:` cmdline setup.
+cmp.setup.cmdline(":", {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+		{ name = "path" },
+	}, {
+		{ name = "cmdline" },
+	}),
 })

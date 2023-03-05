@@ -17,5 +17,7 @@ return {
 		"sss",
 		"hbs",
 		"handlebars",
+		"php",
+		"ejs",
 	},
 }

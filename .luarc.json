@@ -1,5 +1,11 @@
 {
-	"$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
-	"Lua.diagnostics.disable": ["undefined-global"],
-	"Lua.diagnostics.globals": ["vim", "nd"]
+    "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
+    "Lua.diagnostics.disable": [
+        "undefined-global",
+        "unused-local"
+    ],
+    "Lua.diagnostics.globals": [
+        "vim",
+        "nd"
+    ]
 }

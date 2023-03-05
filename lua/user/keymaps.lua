@@ -6,7 +6,7 @@ local term_opts = { silent = true }
 local keymap = vim.api.nvim_set_keymap
 
 --Remap space as leader key
-keymap("", "<Space>", "<Nop>", opts)
+keymap("", "<Space>", '<cmd>lua require("which-key").show(" ", {mode = "n", auto = true})<cr>', opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -36,7 +36,7 @@ keymap("n", "<S-l>", ":BufferLineCycleNext<CR>", opts)
 keymap("n", "<S-h>", ":BufferLineCyclePrev<CR>", opts)
 keymap(
 	"n",
-	"<a-p>",
+	"<S-m>",
 	"<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>",
 	opts
 )
@@ -118,7 +118,6 @@ keymap("n", "<C-i>", "<cmd>TSHighlightCapturesUnderCursor<cr>", opts)
 
 --[[ vim.api.nvim_command("set foldmethod=expr") ]]
 --[[ vim.api.nvim_command("set foldexpr=nvim_treesitter#foldexpr()") ]]
-
 -- hlslens
 -- keymap("n", "n", "<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>", opts)
 -- keymap("n", "N", "<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>", opts)
@@ -128,24 +127,20 @@ keymap("n", "<C-i>", "<cmd>TSHighlightCapturesUnderCursor<cr>", opts)
 -- keymap("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], opts)
 
 -- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
-vim.keymap.set("n", "zR", require("ufo").openAllFolds)
-vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+-- vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+-- vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
 
 -- dap
 keymap(
 	"n",
 	"<F5>",
-	":lua require('telescope').extensions.dap.configurations(require('telescope.themes').get_dropdown{previewer = false})<CR>",
+	"<cmd>lua require('telescope').extensions.dap.configurations(require('telescope.themes').get_dropdown{previewer = false})<CR>",
 	opts
 )
-keymap("n", "<F10>", ":lua require'dap'.step_over()<CR>", opts)
-keymap("n", "<F3>", ":lua require'dap'.step_into()<CR>", opts)
-keymap("n", "<F12>", ":lua require'dap'.step_out()<CR>", opts)
-keymap("n", "<C-b>", ":lua require'dap'.toggle_breakpoint()<CR>", opts)
-keymap("n", "<C-d>b", ":lua require'dap'.toggle_breakpoint()<CR>", opts)
-keymap("n", "<leader>dr", ":lua require'dap'.repl.open()<CR>", opts)
-
 -- split
 -- Split window
 keymap("n", "ss", ":split<Return><C-w>w", opts)
 keymap("n", "sv", ":vsplit<Return><C-w>w", opts)
+
+-- close buffer
+keymap("n", "<leader>q", "<cmd>clo<cr>", opts)

@@ -55,8 +55,9 @@ local diagnostics = {
 	"diagnostics",
 	sources = { "nvim_diagnostic" },
 	sections = { "error", "warn", "info", "hint" },
-	symbols = { error = " ", warn = " ", info = " ", hint = " " },
-	colored = false,
+	--[[ symbols = { error = " ", warn = " ", info = " ", hint = " " }, ]]
+	symbols = { error = "E ", warn = "W ", info = "I ", hint = "H " },
+	colored = true,
 	update_in_insert = true,
 	always_visible = false,
 }
@@ -71,10 +72,10 @@ local diff = {
 
 local mode = {
 	"mode",
-	fmt = function(str)
-		--[[ return str:sub(1, 1) ]]
-		return "-- " .. str:lower() .. " --"
-	end,
+	--[[ fmt = function(str) ]]
+	--[[ return str:sub(1, 1) ]]
+	--[[ return "-- " .. str:lower() .. " --" ]]
+	--[[ end, ]]
 	--[[ separator = { left = "", right = "" }, ]]
 	--[[ separator = { right = "", left = "" }, ]]
 	--[[ separator = { right = "" }, ]]
@@ -87,7 +88,6 @@ local mode = {
 --[[ 	icon_only = true, ]]
 --[[ 	-- icon = nil, ]]
 --[[ } ]]
-
 local filesize = {
 	"filesize",
 	cond = conditions.buffer_not_empty,
@@ -100,6 +100,7 @@ local branch = {
 	--[[ icon = "", ]]
 	icon = "",
 	--[[ icon = "", ]]
+	--[[ icon  = "", ]]
 	cond = conditions.buffer_not_empty,
 	--[[ separator = { right = "" }, ]]
 }
@@ -107,7 +108,7 @@ local branch = {
 local location = {
 	"location",
 	padding = 0,
-	colored = false,
+	colored = true,
 	--[[ separator = { left = "", right = "" }, ]]
 }
 
@@ -115,9 +116,9 @@ local fileformat = {
 	"fileformat",
 	--[[      ]]
 	symbols = {
-		unix = "", -- README
+		unix = "unix", -- README
 	},
-	colored = false,
+	colored = true,
 }
 
 local filename = {
@@ -127,7 +128,6 @@ local filename = {
 	-- 1: Relative path
 	-- 2: Absolute path
 	path = 0,
-
 	shorting_target = 40, -- Shortens path to leave 40 spaces in the window
 	-- for other components. (terrible name, any suggestions?)
 	symbols = {
@@ -153,7 +153,6 @@ local encoding = {
 --[[ 	local index = math.ceil(line_ratio * #chars) ]]
 --[[ 	return chars[index] ]]
 --[[ end ]]
-
 -- local spaces = function()
 -- 	--[[ return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth") ]]
 -- 	return vim.api.nvim_buf_get_option(0, "shiftwidth")
@@ -161,7 +160,6 @@ local encoding = {
 
 local windows = {
 	"windows",
-
 	mode = 0, -- 0: Shows window name
 	-- 1: Shows window index
 	-- 2: Shows window name + window index
@@ -175,7 +173,6 @@ local windows = {
 		packer = "Packer",
 		alpha = "Alpha",
 	}, -- Shows specific window name for that filetype ( { `filetype` = `window_name`, ... } )
-
 	disabled_buftypes = { "quickfix", "prompt" }, -- Hide a window if its buffer's type is disabled
 }
 
@@ -191,11 +188,11 @@ lualine.setup({
 		always_divide_middle = true,
 	},
 	sections = {
-		lualine_a = { branch },
-		lualine_b = { diff },
-		lualine_c = { mode, { navic.get_location, cond = navic.is_available } },
+		lualine_a = { mode },
+		lualine_b = { branch, diff },
+		lualine_c = { { navic.get_location, cond = navic.is_available } },
 		lualine_x = { diagnostics },
-		lualine_y = { windows, python_venv },
+		lualine_y = { python_venv },
 		lualine_z = { fileformat, encoding, "gitsign_status" },
 	},
 	inactive_sections = {
@@ -210,5 +207,7 @@ lualine.setup({
 	extensions = {
 		"nvim-tree",
 		"quickfix",
+		"toggleterm",
+		"nvim-dap-ui",
 	},
 })
