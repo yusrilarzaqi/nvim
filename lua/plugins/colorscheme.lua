@@ -13,7 +13,7 @@ return {
     config = function()
       require('onedark').setup({
         style = "deep",
-        transparent = false,
+        transparent = true,
         term_colors = true, -- Change terminal color as per the selected theme style
         ending_tildes = true,
         -- toggle theme style ---
@@ -68,9 +68,9 @@ return {
           CmpItemKindMethod = { fg = "$bg0", bg = "$bg_blue" },
           CmpItemKindValue = { fg = "$bg0", bg = "$bg_blue" },
           CmpItemKindEnumMember = { fg = "$bg0", bg = "$bg_blue" },
-          CmpItemKindInterface = { fg = "$bg0", bg = "#58B5A8" },
-          CmpItemKindColor = { fg = "$bg0", bg = "#58B5A8" },
-          CmpItemKindTypeParameter = { fg = "$bg0", bg = "#58B5A8" },
+          CmpItemKindInterface = { fg = "$bg0", bg = "$cyan" },
+          CmpItemKindColor = { fg = "$bg0", bg = "$cyan" },
+          CmpItemKindTypeParameter = { fg = "$bg0", bg = "$cyan" },
           TelescopePromptTitle = { bg = "$red", fg = "$bg0" },
           TelescopePromptBorder = { bg = "$bg0", fg = "$bg0" },
           TelescopePromptNormal = { bg = "$bg0", fg = "$fg" },

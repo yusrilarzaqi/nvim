@@ -1,4 +1,5 @@
 require("config")
+require("user.lsp")
 
 vim.g.mapleader = " " -- Make sure to set `mapleader` before lazy so your mappings are correct
 vim.g.maplocalleader = " "
@@ -19,9 +20,3 @@ require('lazy').setup('plugins')
 
 require('onedark').load()
 
-require("user.lsp")
-require("user.gitsigns")
-require("user.toggleterm")
-require("user.impatient")
-require("user.whichkey")
-require("user.nvim-web-devicons")

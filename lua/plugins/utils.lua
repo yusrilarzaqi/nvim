@@ -91,8 +91,8 @@ return {
       require("better_escape").setup({
         mapping = { "jj", "jk" },
         timeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
-        clear_empty_lines = false, -- clear line after escaping if there is only whitespace
-        keys = "<Esc>",           -- keys used for escaping, if it is a function will use the result everytime
+        clear_empty_lines = false,  -- clear line after escaping if there is only whitespace
+        keys = "<Esc>",             -- keys used for escaping, if it is a function will use the result everytime
       })
     end
   },
@@ -183,6 +183,69 @@ return {
         datapath = vim.fn.stdpath("data"),
       })
       require('telescope').load_extension("projects")
+    end
+  },
+
+  -- gitsign
+  {
+    "lewis6991/gitsigns.nvim",
+    config = function()
+      local status_ok, gitsigns = pcall(require, "gitsigns")
+      if not status_ok then
+        return
+      end
+
+      gitsigns.setup({
+        signs = {
+          -- ▎
+          --[[ add = { hl = "GitSignsAdd", text = "▎", numhl = "GitSignsAddNr", linehl = "GitSignsAddLn" }, ]]
+          add = { hl = "GitSignsAdd", text = "▎", numhl = "GitSignsAddNr", linehl = "GitSignsAddLn" },
+          change = { hl = "GitSignsChange", text = "▎", numhl = "GitSignsChangeNr", linehl = "GitSignsChangeLn" },
+          --[[ delete = { hl = "GitSignsDelete", text = "契", numhl = "GitSignsDeleteNr", linehl = "GitSignsDeleteLn" }, ]]
+          delete = { hl = "GitSignsDelete", text = "▎", numhl = "GitSignsDeleteNr", linehl = "GitSignsDeleteLn" },
+          topdelete = { hl = "GitSignsDelete", text = "▎", numhl = "GitSignsDeleteNr", linehl = "GitSignsDeleteLn" },
+          changedelete = {
+            hl = "GitSignsChange",
+            text = "▎",
+            numhl = "GitSignsChangeNr",
+            linehl = "GitSignsChangeLn",
+          },
+        },
+        signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
+        numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
+        linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
+        word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
+        watch_gitdir = {
+          interval = 1000,
+          follow_files = true,
+        },
+        attach_to_untracked = true,
+        current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+        current_line_blame_opts = {
+          virt_text = true,
+          virt_text_pos = "eol", -- 'eol' | 'overlay' | 'right_align'
+          delay = 1000,
+          ignore_whitespace = true,
+        },
+        current_line_blame_formatter_opts = {
+          relative_time = false,
+        },
+        sign_priority = 6,
+        update_debounce = 100,
+        status_formatter = nil, -- Use default
+        max_file_length = 40000,
+        preview_config = {
+          -- Options passed to nvim_open_win
+          border = "single",
+          style = "minimal",
+          relative = "cursor",
+          row = 0,
+          col = 1,
+        },
+        yadm = {
+          enable = false,
+        },
+      })
     end
   }
 }

@@ -1,10 +1,25 @@
 return {
   "nvim-lua/popup.nvim",
   "nvim-lua/plenary.nvim",
-  "kyazdani42/nvim-web-devicons",
-  "akinsho/toggleterm.nvim",
-  "lewis6991/impatient.nvim",
-  { "folke/which-key.nvim", lazy = true },
+  {
+    "kyazdani42/nvim-web-devicons",
+    config = function()
+      require('nvim-web-devicons').setup({
+        default = true,
+      })
+    end
+  },
+  {
+    "lewis6991/impatient.nvim",
+    config = function()
+      local status_ok, impatient = pcall(require, "impatient")
+      if not status_ok then
+        return
+      end
+
+      impatient.enable_profile()
+    end
+  },
   "moll/vim-bbye",
 
   -- LSP
@@ -15,13 +30,10 @@ return {
   "williamboman/mason-lspconfig.nvim",
   "RRethy/vim-illuminate",
   "jose-elias-alvarez/null-ls.nvim",
-  { "j-hui/fidget.nvim",    opts = {} },
+  { "j-hui/fidget.nvim",                              opts = {} },
 
   -- Telescope
   { "nvim-telescope/telescope-fzf-native.nvim",       build = "make" },
-
-  -- Git
-  "lewis6991/gitsigns.nvim",
 
   -- react
   { "dsznajder/vscode-es7-javascript-react-snippets", build = "yarn install --frozen-lockfile && yarn compile" },
